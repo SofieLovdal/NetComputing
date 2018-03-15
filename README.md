@@ -26,4 +26,11 @@ git push --follow-tags
 
 **Delete tag:**  
 git tag -d tagName  
-git push --delete origin tagName  
+git push --delete origin tagName
+
+**Set your the username and email from the terminal:**
+git config --global user.email (your email)
+git config --global user.name (your github username)
+
+Before you commit any of your own files: Pull from the branch that you want to commit to! Important!
+
