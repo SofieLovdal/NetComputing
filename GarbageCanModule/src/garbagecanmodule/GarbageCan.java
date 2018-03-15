@@ -12,8 +12,8 @@ import java.io.Serializable;
  * @author s3017834
  */
 public class GarbageCan implements Serializable{
-    private int ID;
-    private String location;
+    private final int ID;
+    private final String location;
     private Status status;
     private transient OutputHandler outputHandler;
     
@@ -26,6 +26,8 @@ public class GarbageCan implements Serializable{
     
     public void updateStatus(Status status) {
         this.status=status;
+        System.out.println("Status updated of Garbage Can with ID " + this.ID + " , status = " + this.status.getPercentageFull() + " " + this.status.getMalfunctioning());
+        //possibly spawn thread here
         this.outputHandler.sendStatus(this);
     }
 }

@@ -5,18 +5,64 @@
  */
 package garbagecanmodule;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author s3017834
  */
 public class OutputHandler {
     
+    //private InetAddress serverAddress;
+    private DatagramSocket outputSocket;
+    private final String serverAddress;
+    private final int serverPort;
+    
+    //InetAddress set to localhost for now
     public OutputHandler() {
-        
+        this.serverAddress = "localhost";
+        this.serverPort = 2000; 
+        setSocket();
     }
     
-    public void sendStatus(GarbageCan GarbageCan) {
+    private void setSocket() {
+        try {
+            this.outputSocket=new DatagramSocket();
+        } catch (SocketException ex) {
+            Logger.getLogger(OutputHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }    
+    
+    public void sendStatus(GarbageCan garbageCan) {
         //possibly make new thread here so that each send is handled by a different thread
         //or earlier, just so it does not block on send.
+        ObjectOutputStream oos = null; 
+        try {
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream(10000); //is this proper size
+            oos = new ObjectOutputStream(baos);
+            oos.writeObject(garbageCan);
+            final byte[] data = baos.toByteArray();
+            //can the old packet be reused?
+            //here: insert server address as not hardcoded. localhost currently.
+            DatagramPacket packet = new DatagramPacket(data, data.length, InetAddress.getByName(null), this.serverPort);
+            this.outputSocket.send(packet);
+            System.out.println("Status sent");
+        } catch (IOException e) { // add more specific exceptions?
+            Logger.getLogger(OutputHandler.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            try {
+                oos.close();
+            } catch (IOException e) {
+                Logger.getLogger(OutputHandler.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
     }
 }

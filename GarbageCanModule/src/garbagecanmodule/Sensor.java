@@ -32,7 +32,6 @@ public class Sensor implements Runnable{
     //probably improve this method later to give some more
     //realistic data
     private void simulateEvent() {
-        
         this.status.setPercentageFull(r.nextInt(101));
         this.status.setMalfunctioning(r.nextBoolean());
         this.garbageCan.updateStatus(status);

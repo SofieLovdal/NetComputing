@@ -5,11 +5,13 @@
  */
 package garbagecanmodule;
 
+import java.io.Serializable;
+
 /**
  *
  * @author s3017834
  */
-public class Status {
+public class Status implements Serializable{
     private int percentageFull;
     private boolean malfunctioning;
     
@@ -30,6 +32,14 @@ public class Status {
     
      public void setMalfunctioning(boolean malfunctioning) {
         this.malfunctioning=malfunctioning;
+    }
+     
+    public int getPercentageFull() {
+        return this.percentageFull;
+    }
+     
+    public boolean getMalfunctioning() {
+         return this.malfunctioning;
     }
     
 }
