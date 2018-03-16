@@ -30,4 +30,8 @@ public class GarbageCan implements Serializable{
         //possibly spawn thread here
         this.outputHandler.sendStatus(this);
     }
+    
+    public int getID() {
+        return this.ID;
+    }
 }

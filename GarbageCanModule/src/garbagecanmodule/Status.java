@@ -15,7 +15,6 @@ public class Status implements Serializable{
     private int percentageFull;
     private boolean malfunctioning;
     
-    //default constructor
     public Status() {
         this.percentageFull=0;
         this.malfunctioning=false;
@@ -26,20 +25,22 @@ public class Status implements Serializable{
         this.malfunctioning=malfunctioning;
     }
     
+    public int getPercentageFull() {
+        return this.percentageFull;
+    }
+    
     public void setPercentageFull(int percentageFull) {
         this.percentageFull=percentageFull;
     }
     
-     public void setMalfunctioning(boolean malfunctioning) {
+    public boolean getMalfunctioning() {
+        return this.malfunctioning;
+    }
+    
+    public void setMalfunctioning(boolean malfunctioning) {
         this.malfunctioning=malfunctioning;
     }
-     
-    public int getPercentageFull() {
-        return this.percentageFull;
-    }
-     
-    public boolean getMalfunctioning() {
-         return this.malfunctioning;
-    }
+    
+
     
 }

@@ -24,6 +24,11 @@ public class GarbageCanModule {
         sensor1.linkGarbageCan(garbageCan1);
         new Thread(sensor1).start();
         
+        Sensor sensor2 = new Sensor();
+        GarbageCan garbageCan2 = new GarbageCan(2, "Nijenborgh 5", new Status());
+        sensor2.linkGarbageCan(garbageCan2);
+        new Thread(sensor2).start();
+        
     }
     
 }

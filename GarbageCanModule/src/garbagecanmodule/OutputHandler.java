@@ -12,6 +12,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,16 +22,23 @@ import java.util.logging.Logger;
  */
 public class OutputHandler {
     
-    //private InetAddress serverAddress;
+    private InetAddress serverAddress;
     private DatagramSocket outputSocket;
-    private final String serverAddress;
-    private final int serverPort;
+    private int serverPort;
     
-    //InetAddress set to localhost for now
     public OutputHandler() {
-        this.serverAddress = "localhost";
-        this.serverPort = 2000; 
+        setServerAddress();
         setSocket();
+    }
+    
+    /*serverAddress==localhost for now*/
+    private void setServerAddress() {
+        try {
+            this.serverAddress = InetAddress.getByName(null);
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(OutputHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        this.serverPort = 2000; 
     }
     
     private void setSocket() {
@@ -51,8 +59,7 @@ public class OutputHandler {
             oos.writeObject(garbageCan);
             final byte[] data = baos.toByteArray();
             //can the old packet be reused?
-            //here: insert server address as not hardcoded. localhost currently.
-            DatagramPacket packet = new DatagramPacket(data, data.length, InetAddress.getByName(null), this.serverPort);
+            DatagramPacket packet = new DatagramPacket(data, data.length, this.serverAddress, this.serverPort);
             this.outputSocket.send(packet);
             System.out.println("Status sent");
         } catch (IOException e) { // add more specific exceptions?

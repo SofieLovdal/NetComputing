@@ -28,17 +28,32 @@ public class Sensor implements Runnable{
         this.garbageCan=garbageCan;
     }
        
-    //simulates some data
-    //probably improve this method later to give some more
-    //realistic data
+    /*Simulates event happening to the garbage can
+      The chance of the can malfunctioning is set to 5%
+      A random generator gives a number of added garbage for each event*/
     private void simulateEvent() {
-        this.status.setPercentageFull(r.nextInt(101));
-        this.status.setMalfunctioning(r.nextBoolean());
+        this.status.setPercentageFull(this.status.getPercentageFull() + r.nextInt(10));
+        if(r.nextInt(101)>95) {
+            this.status.setMalfunctioning(true);
+        }
         this.garbageCan.updateStatus(status);
+        
+        /*If the can is full or malfunctioning, they can can not be used any more.
+          The thread sleeps for one minute, simulating waiting for a garbage worker,
+          which then empties or fixes the can, reseting the values.*/
+        if((this.status.getPercentageFull()>=100) || (this.status.getMalfunctioning() == true)) {
+            try {
+                System.out.println("Garbage can " + this.garbageCan.getID() + " is full or malfunctioning... waiting for garbage worker");
+                sleep(60000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Sensor.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.status.setStatus(0, false);
+            this.garbageCan.updateStatus(this.status);
+        }
     }
     
-    //The run method simulates an event (garbage added, for example)
-    //every 5 seconds.
+    /*Simulates the sensor detecting an event every 5 seconds*/
     @Override
     public void run() {
         while(true) {
