@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package garbagecanmodule;
+package dataservermodule;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -16,26 +16,19 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author s3017834
+ * @author Sofie Lovdal.
+ * Smaller version of GarbageCan object such that server can access
+ * the necessary fields and methods.
  */
 public class GarbageCan implements Serializable{
     private final int ID;
     private final String location;
     private Status status;
-    private transient OutputHandler outputHandler;
     
     public GarbageCan(int ID, String location, Status status) {
         this.ID=ID;
         this.location=location;
         this.status=status;
-        this.outputHandler = new OutputHandler();
-    }
-    
-    public void updateStatus(Status status) {
-        this.status=status;
-        System.out.println("Status updated of Garbage Can with ID " + this.ID + " , status = " + this.status.getPercentageFull() + " " + this.status.getMalfunctioning());
-        //possibly spawn thread here
-        this.outputHandler.sendStatus(this);
     }
     
     public int getID() {

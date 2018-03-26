@@ -1,75 +1,60 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package garbagecanmodule;
 
-import java.io.ByteArrayOutputStream;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author s3017834
- */
+/*Sofie Lovdal 26.3.2018
+  This class takes care of sending the status of the garbage cans to the
+  message queue in front of the server*/
+
 public class OutputHandler {
-    
-    private InetAddress serverAddress;
-    private DatagramSocket outputSocket;
-    private int serverPort;
-    
-    public OutputHandler() {
-        setServerAddress();
-        setSocket();
-    }
-    
-    /*serverAddress==localhost for now*/
-    private void setServerAddress() {
-        try {
-            this.serverAddress = InetAddress.getByName(null);
-        } catch (UnknownHostException ex) {
-            Logger.getLogger(OutputHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        this.serverPort = 2000; 
-    }
-    
-    private void setSocket() {
-        try {
-            this.outputSocket=new DatagramSocket();
-        } catch (SocketException ex) {
-            Logger.getLogger(OutputHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
+  private final static String QUEUE_NAME = "hello";
+  Channel myChannel;
+  ConnectionFactory factory;
+  Connection myConnection;
+  
+  /*Use configfiles to set these later in order not to hardcode factory attributes
+  default portnumber is 5672, otherwise factory.setPort(int)*/
+  public OutputHandler() {
+    this.factory = new ConnectionFactory();
+    factory.setUsername("sofie");
+    factory.setPassword("password");
+    factory.setHost("145.100.227.123");
+    connectToMQ(); 
+  }
+ 
+  private void connectToMQ() {
+    try {
+        myConnection = factory.newConnection();
+        myChannel = myConnection.createChannel();
+        myChannel.queueDeclare(QUEUE_NAME, false, false, false, null);
+    } catch (IOException | TimeoutException e) {
+        Logger.getLogger(OutputHandler.class.getName()).log(Level.SEVERE, null, e);
     }    
-    
-    public void sendStatus(GarbageCan garbageCan) {
-        //possibly make new thread here so that each send is handled by a different thread
-        //or earlier, just so it does not block on send.
-        ObjectOutputStream oos = null; 
-        try {
-            final ByteArrayOutputStream baos = new ByteArrayOutputStream(10000); //is this proper size
-            oos = new ObjectOutputStream(baos);
-            oos.writeObject(garbageCan);
-            final byte[] data = baos.toByteArray();
-            //can the old packet be reused?
-            DatagramPacket packet = new DatagramPacket(data, data.length, this.serverAddress, this.serverPort);
-            this.outputSocket.send(packet);
-            System.out.println("Status sent");
-        } catch (IOException e) { // add more specific exceptions?
-            Logger.getLogger(OutputHandler.class.getName()).log(Level.SEVERE, null, e);
-        } finally {
-            try {
-                oos.close();
-            } catch (IOException e) {
-                Logger.getLogger(OutputHandler.class.getName()).log(Level.SEVERE, null, e);
-            }
-        }
+  }
+  
+  
+  public void sendStatus(GarbageCan garbagecan) {
+    try {
+        myChannel.basicPublish("", QUEUE_NAME, null, garbagecan.getBytes());
+        System.out.println("Sent garbage can with ID '" + garbagecan.getID() + "'");
+    } catch (IOException e) {
+        Logger.getLogger(OutputHandler.class.getName()).log(Level.SEVERE, null, e);
     }
+  }
+  
+  public void closeConnection() {
+      try {
+          myChannel.close();
+          myConnection.close();
+      } catch (IOException | TimeoutException e) {
+          Logger.getLogger(OutputHandler.class.getName()).log(Level.SEVERE, null, e);
+      }
+  }
 }
