@@ -28,7 +28,6 @@ public class DataServer implements Runnable {
     DataServer() {
         this.isRunning=true;
         this.inputHandler=new InputHandler();
-        this.outputHandler = new OutputHandler();
         this.startOutputHandler();
     }
 
@@ -56,8 +55,9 @@ public class DataServer implements Runnable {
     @Override
     public void run() {
         while (isRunning) {
-            GarbageCan gc = inputHandler.popMessage();
-            insertGarbageCan(gc);
+            //GarbageCan gc = inputHandler.popMessage();
+            //insertGarbageCan(gc);
+            inputHandler.popMessage();
         }
     }
 

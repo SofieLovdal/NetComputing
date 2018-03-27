@@ -40,10 +40,6 @@ public class OutputHandler extends Thread {
         }
     }
 
-    OutputHandler() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     /**
      * Send the garbage can information to the REST server.
      * 
