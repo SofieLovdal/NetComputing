@@ -1,5 +1,6 @@
 package dataservermodule;
 
+import garbagecanmodule.GarbageCan;
 import java.net.InetAddress;
 import java.util.ArrayList;
 
@@ -27,8 +28,9 @@ public class DataServer implements Runnable {
 
     DataServer() {
         this.isRunning=true;
-        this.inputHandler=new InputHandler();
-        this.startOutputHandler();
+        this.inputHandler=new InputHandler(this);
+        this.garbageCans=new ArrayList<>();
+        //this.startOutputHandler();
     }
 
     private void startOutputHandler() {
@@ -51,13 +53,17 @@ public class DataServer implements Runnable {
             this.garbageCans.add(gc);
         }
     }
+    
+    public void printList() {
+        for(GarbageCan can : this.garbageCans) 
+            System.out.println(can.toString());
+    }
 
     @Override
     public void run() {
         while (isRunning) {
-            //GarbageCan gc = inputHandler.popMessage();
-            //insertGarbageCan(gc);
             inputHandler.popMessage();
+            printList();
         }
     }
 

@@ -20,12 +20,12 @@ public class GarbageCanModule {
         //starts run method of sensor that will simulate data and give it to
         //the garbage can.
         Sensor sensor1 = new Sensor();
-        GarbageCan garbageCan1 = new GarbageCan(1, "Nieuwe Blekstraat 1", new Status());
+        GarbageCan garbageCan1 = new GarbageCan(3, "Nieuwe Blekstraat 1", new Status());
         sensor1.linkGarbageCan(garbageCan1);
         new Thread(sensor1).start();
         
         Sensor sensor2 = new Sensor();
-        GarbageCan garbageCan2 = new GarbageCan(2, "Nijenborgh 5", new Status());
+        GarbageCan garbageCan2 = new GarbageCan(4, "Nijenborgh 5", new Status());
         sensor2.linkGarbageCan(garbageCan2);
         new Thread(sensor2).start();
         

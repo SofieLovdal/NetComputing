@@ -6,6 +6,7 @@ package dataservermodule;
  * and open the template in the editor.
  */
 
+import garbagecanmodule.GarbageCan;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;

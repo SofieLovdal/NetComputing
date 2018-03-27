@@ -6,14 +6,17 @@
 package dataservermodule;
 
 import com.rabbitmq.client.*;
+import garbagecanmodule.GarbageCan;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 /**
  * @author Sofie Lovdal and Elisa Oostwal
  * This class communicates with the RabbitMQ message queue. It pops messages
- * and returns them to the server for processing.
+ * and inserts them in the message queue of the server.
  */
 public class InputHandler extends Thread {
     
@@ -21,13 +24,15 @@ public class InputHandler extends Thread {
     Channel myChannel;
     ConnectionFactory factory;
     Connection myConnection;
+    private DataServer server;
 
-    public InputHandler() {
+    public InputHandler(DataServer server) {
+        this.server = server;
         this.factory = new ConnectionFactory();
-        factory.setUsername("sofie");
-        factory.setPassword("password");
-        factory.setHost("145.100.227.123");
-        connectToMQ();
+        this.factory.setUsername("sofie");
+        this.factory.setPassword("password");
+        this.factory.setHost("145.120.37.171");
+        this.connectToMQ();
     }
     
     public void connectToMQ() {
@@ -43,19 +48,33 @@ public class InputHandler extends Thread {
     
     public void popMessage() {
         Consumer consumer = new DefaultConsumer(myChannel) {
-        @Override
-        public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-            GarbageCan gc = null;
-            gc = gc.parseBytes(body);
-            System.out.println("Received GarbageCan with ID: '" + gc.getID() + "'");
-        }
+            @Override
+            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                GarbageCan gc = parseBytes(body);
+                InputHandler.this.server.insertGarbageCan(gc);
+            }
         };
         try {
-            myChannel.basicConsume(QUEUE_NAME, true, consumer);
-            //return gc; change this later to return garbage can
+            myChannel.basicConsume(QUEUE_NAME, true, consumer);       
         } catch (IOException ex) {
             Logger.getLogger(InputHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    
+    public GarbageCan parseBytes(byte[] message) {
+        GarbageCan can=null;
+        try {
+            ByteArrayInputStream bis = new ByteArrayInputStream(message);
+            ObjectInputStream ois = new ObjectInputStream(bis);
+            can = (GarbageCan) ois.readObject();
+            ois.close();
+            bis.close();
+        }
+        catch (IOException | ClassNotFoundException e) {
+            Logger.getLogger(GarbageCan.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return can;
     }
         
 }

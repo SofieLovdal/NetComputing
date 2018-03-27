@@ -17,6 +17,8 @@ import java.util.logging.Logger;
 /**
  *
  * @author s3017834
+ * Class representation of a garbage can. Every time its sensor updates its
+ * status, 
  */
 public class GarbageCan implements Serializable{
     private final int ID;
@@ -33,13 +35,18 @@ public class GarbageCan implements Serializable{
     
     public void updateStatus(Status status) {
         this.status=status;
-        System.out.println("Status updated of Garbage Can with ID " + this.ID + " , status = " + this.status.getPercentageFull() + " " + this.status.getMalfunctioning());
-        //possibly spawn thread here
+        System.out.println("Status updated of Garbage Can with ID " + this.ID + 
+                            " , status = " + this.status.getPercentageFull() + " " 
+                          + this.status.getMalfunctioning());
         this.outputHandler.sendStatus(this);
     }
     
     public int getID() {
         return this.ID;
+    }
+    
+    public Status getStatus() {
+        return this.status;
     }
     
     public byte[] getBytes() {
@@ -59,19 +66,18 @@ public class GarbageCan implements Serializable{
         }
         return bytes;
     }
-    
-    public GarbageCan parseBytes(byte[] message) {
-        GarbageCan can=null;
-        try {
-            ByteArrayInputStream bis = new ByteArrayInputStream(message);
-            ObjectInputStream ois = new ObjectInputStream(bis);
-            can = (GarbageCan) ois.readObject();
-            ois.close();
-            bis.close();
-        }
-        catch (IOException | ClassNotFoundException e) {
-            Logger.getLogger(GarbageCan.class.getName()).log(Level.SEVERE, null, e);
-        }
-        return can;
+        
+    /**
+     *
+     * @returns the String representation of a Garbage Can,
+     * containing all its related information
+     */
+    @Override
+    public String toString() {
+        String malfunctioning = this.status.getMalfunctioning()==true ? "" : "not";
+        return ("GarbageCan with ID " + this.ID + " located at " 
+                + this.location + " is " + this.status.getPercentageFull() + 
+                " percent full and is " + malfunctioning + " malfunctioning" );
     }
+
 }

@@ -25,7 +25,7 @@ public class OutputHandler {
     this.factory = new ConnectionFactory();
     factory.setUsername("sofie");
     factory.setPassword("password");
-    factory.setHost("145.100.227.123");
+    factory.setHost("145.120.37.171");
     connectToMQ(); 
   }
  
