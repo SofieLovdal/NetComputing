@@ -32,8 +32,8 @@ public abstract class User {
         this.garbageCollectorAdresses = new ArrayList<>();
         this.portList=new ArrayList<>();
         //These will be received from the network later, just adding a static list for testing purposes
-        this.garbageCans.add(new GarbageCan(1, "address 1", new Status()));
-        this.garbageCans.add(new GarbageCan(2, "address 2", new Status()));
+        this.garbageCans.add(new GarbageCan(1, "Donald Duckstreet 5", new Status()));
+        this.garbageCans.add(new GarbageCan(2, "Kalle Ankagatan 5", new Status()));
         
         initializeUI();
         
@@ -46,7 +46,7 @@ public abstract class User {
         this.dashboard=new UI(this);
         frame = new JFrame("Garbage Can App Groningen");
         frame.add(dashboard);
-        frame.setSize(1000, 600);
+        frame.setSize(1040, 600);
         frame.setVisible(true);
     }
     
@@ -62,5 +62,5 @@ public abstract class User {
         //update this.garbageCollectorAddresses.
     }
     
-    public abstract void displayMessage();
+    public abstract void displayMessageConfirmation();
 }

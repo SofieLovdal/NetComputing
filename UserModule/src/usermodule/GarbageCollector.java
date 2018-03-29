@@ -21,11 +21,9 @@ public class GarbageCollector extends User {
     }
 
     @Override
-    public void displayMessage() {
-        //what should happen here?
+    public void displayMessageConfirmation() {
         this.messages.add("You sent a message to the other garbage collectors at " + LocalDateTime.now());
         this.dashboard.updateMessageList(messages);
     }
-    
-    
+     
 }

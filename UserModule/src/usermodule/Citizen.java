@@ -20,7 +20,7 @@ public class Citizen extends User {
     /*When a citizen sends a message, their message window displays a confirmation
     and the time the message was sent.*/
     @Override
-    public void displayMessage() {
+    public void displayMessageConfirmation() {
         this.messages.add("You sent a message to the garbage collectors at " + LocalDateTime.now());
         this.dashboard.updateMessageList(messages);
     }

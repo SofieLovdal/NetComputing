@@ -31,7 +31,7 @@ public class InputHandler extends Thread {
         this.factory = new ConnectionFactory();
         this.factory.setUsername("sofie");
         this.factory.setPassword("password");
-        this.factory.setHost("145.100.224.103");
+        this.factory.setHost("145.100.226.78");
         this.connectToMQ();
     }
     
