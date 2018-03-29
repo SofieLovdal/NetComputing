@@ -32,8 +32,8 @@ public abstract class User {
         this.garbageCollectorAdresses = new ArrayList<>();
         this.portList=new ArrayList<>();
         //These will be received from the network later, just adding a static list for testing purposes
-        this.garbageCans.add(new GarbageCan(1, "Donald Duckstreet 5", new Status()));
-        this.garbageCans.add(new GarbageCan(2, "Kalle Ankagatan 5", new Status()));
+        //this.garbageCans.add(new GarbageCan(1, "Donald Duckstreet 5", new Status()));
+        //this.garbageCans.add(new GarbageCan(2, "Kalle Ankagatan 5", new Status()));
         
         initializeUI();
         
