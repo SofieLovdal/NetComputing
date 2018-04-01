@@ -10,8 +10,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.ServerSocket;
 import java.net.SocketException;
+import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,12 +52,15 @@ class InputHandler implements Runnable {
     private void receiveMessage() {
         try {
             byte[] buffer = new byte[10000];
+            System.out.println("Waiting for message... ");
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
             inputSocket.receive(packet);
             ByteArrayInputStream baos = new ByteArrayInputStream(buffer);
             ObjectInputStream oos = new ObjectInputStream(baos);
             String message = (String)oos.readObject();
-            this.garbageCollector.messages.add(message);
+            System.out.println("Garbage collector received message: " + message);
+            this.garbageCollector.addMessage(LocalDateTime.now().withNano(0) + " : " + message);
+            this.garbageCollector.dashboard.updateMessageList();
         } catch (IOException ex) {
             Logger.getLogger(InputHandler.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {

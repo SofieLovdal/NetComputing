@@ -5,10 +5,8 @@
  */
 package garbagecanmodule;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.logging.Level;
@@ -26,11 +24,19 @@ public class GarbageCan implements Serializable{
     private Status status;
     private transient OutputHandler outputHandler;
     
+    public GarbageCan(int ID, String location) {
+        this.ID=ID;
+        this.location=location;
+        this.status=new Status();
+        this.outputHandler = new OutputHandler();
+    }
+    
+    /*The constructor below is used after a garbageCan has been sent over the
+      network - no outputhandler or sensor is started.*/
     public GarbageCan(int ID, String location, Status status) {
         this.ID=ID;
         this.location=location;
         this.status=status;
-        this.outputHandler = new OutputHandler();
     }
     
     public void updateStatus(Status status) {

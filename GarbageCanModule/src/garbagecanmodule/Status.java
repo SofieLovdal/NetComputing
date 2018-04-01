@@ -20,6 +20,11 @@ public class Status implements Serializable{
         this.malfunctioning=false;
     }
     
+    public Status(int percentageFull, boolean malfunctioning) {
+        this.percentageFull = percentageFull;
+        this.malfunctioning=malfunctioning;
+    }
+    
     public void setStatus(int percentageFull, boolean malfunctioning) {
         this.percentageFull=percentageFull;
         this.malfunctioning=malfunctioning;

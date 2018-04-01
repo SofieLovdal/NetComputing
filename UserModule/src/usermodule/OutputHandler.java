@@ -42,18 +42,16 @@ class OutputHandler {
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
 	    ObjectOutputStream os = new ObjectOutputStream(out);
-            
             os.writeObject(message);
-	    os.flush();
-	    os.close();
-            
+	    
 	    byte[] data = out.toByteArray();
             
             for(InetAddress address: addressList) {
                 DatagramPacket packet = new DatagramPacket(data, data.length, address, portList.get(addressList.indexOf(address)));
                 socket.send(packet);
-                System.out.println("Message to garbage collector sent");
-            }    
+            }
+            os.flush();
+	    os.close();
         } catch (IOException e) {
             Logger.getLogger(OutputHandler.class.getName()).log(Level.SEVERE, null, e);
         } 
