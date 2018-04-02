@@ -6,13 +6,29 @@
 package usermodule;
 
 import garbagecanmodule.GarbageCan;
+import garbagecanmodule.GarbageCanList;
 import garbagecanmodule.Status;
+import java.awt.List;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.net.ContentHandler;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 
 /**
  *
@@ -73,9 +89,48 @@ public abstract class User {
         this.messages.add(message);
     }
     
-    private void requestGarbageCanList() { //public/protected?
-        //GET info from rest server
-        //PARSE Json object. Make into list of Garbage Cans. Update this.garbageCans.
+    /*GET garbagecans from REST server*/
+    private void requestGarbageCanList() {  try {
+        String address = "http://10.19.0.129:8080/UserManagement/rest/GarbageService/garbagecans";
+        
+        URL url = new URL(address);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+        
+        int status = con.getResponseCode();
+        System.out.println("status code = " + status);
+        
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        inputLine=in.readLine();
+        System.out.println("inputLine: " + inputLine);
+        JAXBContext jaxbContext;
+        try {
+            jaxbContext = JAXBContext.newInstance(GarbageCanList.class);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            StringReader reader = new StringReader(inputLine);
+            
+            GarbageCanList garbageCanList;
+            garbageCanList = (GarbageCanList) unmarshaller.unmarshal(reader);
+            for(GarbageCan gc : garbageCanList.getGarbageCanList()) {
+                System.out.println(gc.toString());
+            }
+            this.garbageCans=garbageCanList.getGarbageCanList();
+        } catch (JAXBException ex) {
+            Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
+        }
+              
+        in.close();
+        con.disconnect();
+        
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ProtocolException ex) {
+            Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    
         dashboard.updateGarbageCanList();
     }
     

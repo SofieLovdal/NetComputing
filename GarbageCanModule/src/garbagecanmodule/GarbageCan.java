@@ -11,7 +11,13 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement(name="garbagecan")
+@XmlAccessorType (XmlAccessType.FIELD)
 /**
  *
  * @author s3017834
@@ -19,10 +25,16 @@ import java.util.logging.Logger;
  * status, 
  */
 public class GarbageCan implements Serializable{
-    private final int ID;
-    private final String location;
+    @XmlElement(name="id")
+    private int ID;
+    @XmlElement(name="location")
+    private String location;
+    @XmlElement(name="status")
     private Status status;
     private transient OutputHandler outputHandler;
+    
+    
+    public GarbageCan() {}
     
     public GarbageCan(int ID, String location) {
         this.ID=ID;
@@ -71,6 +83,18 @@ public class GarbageCan implements Serializable{
             Logger.getLogger(GarbageCan.class.getName()).log(Level.SEVERE, null, e);
         }
         return bytes;
+    }
+    
+    public void setID(int ID) {
+        this.ID=ID;
+    }
+    
+    public void setLocation(String location) {
+        this.location = location;
+    }
+    
+    public void setStatus(Status status) {
+        this.status = status;
     }
         
     /**
